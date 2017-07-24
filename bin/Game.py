@@ -39,48 +39,50 @@ class Player(pygame.sprite.Sprite):
         #Checks for Entitys for the player to collide with
 
         for t in tiles:
-            if pygame.sprite.collide_mask(self, t) is not None:
-                #if isinstance(t, Spike):
+            if pygame.sprite.collide_rect(self,t):
+                if pygame.sprite.collide_mask(self, t) is not None:
+                    #if isinstance(t, Spike):
 
-                if isinstance(t, Platform):
+                    if isinstance(t, Platform):
 
-                    if x_change > 0:
-                        self.rect.right = t.rect.left
+                        if x_change > 0:
+                            self.rect.right = t.rect.left
 
-                    if x_change < 0:
-                        self.rect.left = t.rect.right
+                        if x_change < 0:
+                            self.rect.left = t.rect.right
 
-                if isinstance(t, Box):
+                    if isinstance(t, Box):
 
-                    if x_change > 0:
-                        t.rect.left =self.rect.right
+                        if x_change > 0:
+                            t.rect.left =self.rect.right
 
-                    if x_change < 0:
-                        t.rect.right = self.rect.left
+                        if x_change < 0:
+                            t.rect.right = self.rect.left
 
     def collision_detection_y(self, y_change, tiles):
         # collides the player while he is moving in the y direction
 
         for t in tiles:
-            if pygame.sprite.collide_mask(self,t) is not None:
-                if isinstance(t, Platform):
-                    if y_change > 0:
-                        self.rect.bottom = t.rect.top
-                        self.jump_legal = True
-                        self.y_change = 0
+            if pygame.sprite.collide_rect(self,t):
+                if pygame.sprite.collide_mask(self,t) is not None:
+                    if isinstance(t, Platform):
+                        if y_change > 0:
+                            self.rect.bottom = t.rect.top
+                            self.jump_legal = True
+                            self.y_change = 0
 
-                    if y_change < 0:
-                        self.rect.top = t.rect.bottom
-                        self.y_change = 0
-                if isinstance(t, Box):
-                    if y_change > 0:
-                        self.rect.bottom = t.rect.top
-                        self.jump_legal = True
-                        self.y_change = 0
+                        if y_change < 0:
+                            self.rect.top = t.rect.bottom
+                            self.y_change = 0
+                    if isinstance(t, Box):
+                        if y_change > 0:
+                            self.rect.bottom = t.rect.top
+                            self.jump_legal = True
+                            self.y_change = 0
 
-                    if y_change < 0:
-                        self.rect.top = t.rect.bottom
-                        self.y_change = 0
+                        if y_change < 0:
+                            self.rect.top = t.rect.bottom
+                            self.y_change = 0
 
     def go_left(self):
         self.x_change = -2
@@ -92,7 +94,7 @@ class Player(pygame.sprite.Sprite):
         self.x_change = 0
 
     def gravity(self):
-       self.y_change += .01
+       self.y_change += .15
 
     def update(self):
 
