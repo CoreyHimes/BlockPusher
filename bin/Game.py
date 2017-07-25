@@ -6,7 +6,6 @@ display_scale = 1
 display_width = 800*display_scale
 display_height = 600*display_scale
 
-
 black = (0, 0, 0)
 white = (255, 255, 255)
 
@@ -213,8 +212,8 @@ class Level_1(Level):
             "P                       P",
             "P                    PPPP",
             "P                       P",
-            "P                       P",
-            "P                B      P",
+            "PP                      P",
+            "PPP              B      P",
             "PPPPPPPPPPPPPPPPPPP     P",
             "P                       P",
             "P                       P",
