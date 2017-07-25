@@ -190,22 +190,11 @@ class Box(pygame.sprite.Sprite):
                                 self.y_change = 0
 
 
-
-class Level():
-    #todo once sprite sheets are created, put them in levels instead platforms, that way each level can have different sprites without work
+#This is a class of constants, namely the array representations of all of the levels
+class Levels():
     def __init__(self):
         super().__init__()
-
-
-class Level_1(Level):
-    def __init__(self):
-        super().__init__()
-
-    def build_level(self):
-        entities = pygame.sprite.Group()
-        tiles = []
-        x = y = 0
-        level = [
+        self.level_1 = [
             "PPPPPPPPPPPPPPPPPPPPPPPPP",
             "P                       P",
             "P                       P",
@@ -225,8 +214,39 @@ class Level_1(Level):
             "PP                      P",
             "P              B  B     P",
             "PPPPPPPPPPPPPPPPPPPPPPPPP", ]
+        self.level_2 = [
+            "PPPPPPPPPPPPPPPPPPPPPPPPP",
+            "P                       P",
+            "P                       P",
+            "P                       P",
+            "P                    PPPP",
+            "P                       P",
+            "PP                      P",
+            "PPP              B      P",
+            "PPPPPPPPPPPPPPPPPPP     P",
+            "P                       P",
+            "P                       P",
+            "P                 PPPPPPP",
+            "P                       P",
+            "P         PPPPPPP       P",
+            "P                      TP",
+            "P                     PPP",
+            "PP                      P",
+            "P BB           B  B     P",
+            "PPPPPPPPPPPPPPPPPPPPPPPPP", ]
+
+
+class Level():
+    def __init__(self):
+        super().__init__()
+
+    def build_level(self, level):
+        entities = pygame.sprite.Group()
+        tiles = []
+        x = y = 0
+        current_level = level
         # build the level
-        for row in level:
+        for row in current_level:
             for col in row:
                 if col == "P":
                     p = Platform(x, y)
@@ -254,8 +274,8 @@ class Level_1(Level):
 def gameloop():
 #Initializes game loop with level and player start locations
     end = False
-    level = Level_1()
-    tiles = Level_1.build_level(level)
+    level = Levels()
+    tiles = Level().build_level(level.level_1)
     x = (display_width*0.45)
     y = (display_height * 0.80)
     player = Player(x, y, tiles)
