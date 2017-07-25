@@ -3,12 +3,12 @@ from pygame import *
 
 pygame.init()
 display_scale = 1
-display_width =800*display_scale
-display_height =600*display_scale
+display_width = 800*display_scale
+display_height = 600*display_scale
 
 
-black = (0,0,0)
-white = (255,255,255)
+black = (0, 0, 0)
+white = (255, 255, 255)
 
 gameDisplay = pygame.display.set_mode((display_width,display_height))
 pygame.display.set_caption('Title')
@@ -32,7 +32,7 @@ class Player(pygame.sprite.Sprite):
     def jump(self):
 
         if self.jump_legal == True:
-            self.y_change = -4
+            self.y_change = -8
             self.jump_legal = False
 
     def collision_detection_x(self, x_change, tiles):
@@ -41,23 +41,31 @@ class Player(pygame.sprite.Sprite):
         for t in tiles:
             if pygame.sprite.collide_rect(self,t):
                 if pygame.sprite.collide_mask(self, t) is not None:
-                    #if isinstance(t, Spike):
 
                     if isinstance(t, Platform):
 
                         if x_change > 0:
-                            self.rect.right = t.rect.left
+                            while pygame.sprite.collide_mask(self,t) is not None:
+                                self.rect.left += -1
 
                         if x_change < 0:
-                            self.rect.left = t.rect.right
+                            while pygame.sprite.collide_mask(self,t) is not None:
+                                self.rect.left += 1
 
                     if isinstance(t, Box):
 
-                        if x_change > 0:
-                            t.rect.left =self.rect.right
+                        t.x_change=self.x_change
+                        #this function checks if the box collides with another object
+                        if t.box_collision_x(tiles) is True:
+                            if x_change > 0:
+                                while pygame.sprite.collide_mask(self, t) is not None:
+                                    self.rect.left += -1
 
-                        if x_change < 0:
-                            t.rect.right = self.rect.left
+                            if x_change < 0:
+                                while pygame.sprite.collide_mask(self, t) is not None:
+                                    self.rect.left += 1
+
+                        t.update()
 
     def collision_detection_y(self, y_change, tiles):
         # collides the player while he is moving in the y direction
@@ -72,8 +80,10 @@ class Player(pygame.sprite.Sprite):
                             self.y_change = 0
 
                         if y_change < 0:
-                            self.rect.top = t.rect.bottom
-                            self.y_change = 0
+                            while pygame.sprite.collide_mask(self, t) is not None:
+                                self.rect.top += 1
+                                self.y_change = 0
+
                     if isinstance(t, Box):
                         if y_change > 0:
                             self.rect.bottom = t.rect.top
@@ -143,11 +153,47 @@ class Box(pygame.sprite.Sprite):
         self.image = pygame.image.load('images/Box.png').convert_alpha()
         self.rect = Rect(x, y, 32, 32)
         self.mask = pygame.mask.from_surface(self.image)
+        self.x_change = 0
+        self.y_change = 0
 
     def update(self):
-        #def gravity(self):
-        #self.rect.bottom += 1
-        pass
+        self.rect.left += self.x_change
+        self.x_change = 0
+        #self.gravity()
+        self.rect.bottom += self.y_change
+        #self.box_collision_y()
+
+    def gravity(self):
+        self.y_change += .15
+
+    def box_collision_x(self, tiles):
+        did_collide_x = False
+        for t in tiles:
+            if t is not self:
+                 if pygame.sprite.collide_rect(self,t):
+                    if pygame.sprite.collide_mask(self, t) is not None:
+                        if self.x_change > 0:
+                            while pygame.sprite.collide_mask(self,t) is not None:
+                                self.rect.left += -1
+
+                        if self.x_change < 0:
+                            while pygame.sprite.collide_mask(self,t) is not None:
+                                self.rect.left += 1
+
+                        return True
+        return False
+    def box_collision_y(self, tiles):
+        for t in tiles:
+            if t is not self:
+                if pygame.sprite.collide_rect(self, t):
+                    print ('is colldiing')
+                    if pygame.sprite.collide_mask(self, t) is not None:
+                        if isinstance(t, Platform):
+                            if self.y_change > 0:
+                                self.rect.bottom = t.rect.top
+                                self.y_change = 0
+
+
 
 class Level():
     #todo once sprite sheets are created, put them in levels instead platforms, that way each level can have different sprites without work
@@ -158,6 +204,7 @@ class Level():
 class Level_1(Level):
     def __init__(self):
         super().__init__()
+        self.tiles=[]
 
     def build_level(self):
         entities=pygame.sprite.Group()
@@ -171,7 +218,7 @@ class Level_1(Level):
             "P                    PPPP",
             "P                       P",
             "P                       P",
-            "P                S      P",
+            "P                B      P",
             "PPPPPPPPPPPPPPPPPPP     P",
             "P                       P",
             "P                       P",
@@ -180,31 +227,9 @@ class Level_1(Level):
             "P         PPPPPPP       P",
             "P                      TP",
             "P                     PPP",
-            "P                       P",
-            "P              B        P",
+            "PP                      P",
+            "P              B  B     P",
             "PPPPPPPPPPPPPPPPPPPPPPPPP", ]
-        '''
-        level = [
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "           P",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "              ",
-            "            P             ", ]
-            '''
         # build the level
         for row in level:
             for col in row:
@@ -227,6 +252,7 @@ class Level_1(Level):
                 x += 32
             y += 32
             x = 0
+
         return tiles
 
 
