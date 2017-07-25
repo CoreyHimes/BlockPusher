@@ -14,7 +14,6 @@ gameDisplay = pygame.display.set_mode((display_width,display_height))
 pygame.display.set_caption('Title')
 clock = pygame.time.Clock()
 
-
 class Player(pygame.sprite.Sprite):
 
     def __init__(self, x, y, tiles):
@@ -161,13 +160,11 @@ class Box(pygame.sprite.Sprite):
         self.x_change = 0
         #self.gravity()
         self.rect.bottom += self.y_change
-        #self.box_collision_y()
 
     def gravity(self):
         self.y_change += .15
 
     def box_collision_x(self, tiles):
-        did_collide_x = False
         for t in tiles:
             if t is not self:
                  if pygame.sprite.collide_rect(self,t):
@@ -182,11 +179,11 @@ class Box(pygame.sprite.Sprite):
 
                         return True
         return False
+
     def box_collision_y(self, tiles):
         for t in tiles:
             if t is not self:
                 if pygame.sprite.collide_rect(self, t):
-                    print ('is colldiing')
                     if pygame.sprite.collide_mask(self, t) is not None:
                         if isinstance(t, Platform):
                             if self.y_change > 0:
@@ -204,10 +201,9 @@ class Level():
 class Level_1(Level):
     def __init__(self):
         super().__init__()
-        self.tiles=[]
 
     def build_level(self):
-        entities=pygame.sprite.Group()
+        entities = pygame.sprite.Group()
         tiles = []
         x = y = 0
         level = [
@@ -253,17 +249,17 @@ class Level_1(Level):
             y += 32
             x = 0
 
-        return tiles
+        return entities
 
 
 def gameloop():
 #Initializes game loop with level and player start locations
     end = False
     level = Level_1()
-    tiles= Level_1.build_level((0,0))
+    tiles = Level_1.build_level(level)
     x = (display_width*0.45)
     y = (display_height * 0.80)
-    player = Player(x,y,tiles)
+    player = Player(x, y, tiles)
 
     while not end:
         gameDisplay.fill(black)
