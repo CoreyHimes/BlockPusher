@@ -1,5 +1,6 @@
 import pygame
 from pygame import *
+from queue import *
 
 pygame.init()
 display_scale = 1
@@ -26,6 +27,7 @@ class Player(pygame.sprite.Sprite):
         self.jump_legal = True
         self.tiles = tiles
         self.mask = pygame.mask.from_surface(self.image)
+        self.level_complete = False
 
     def jump(self):
 
@@ -91,6 +93,10 @@ class Player(pygame.sprite.Sprite):
                         if y_change < 0:
                             self.rect.top = t.rect.bottom
                             self.y_change = 0
+
+                    if isinstance(t, Teleporter):
+                        self.level_complete = True
+
 
     def go_left(self):
         self.x_change = -2
@@ -234,7 +240,12 @@ class Levels():
             "PP                      P",
             "P BB           B  B     P",
             "PPPPPPPPPPPPPPPPPPPPPPPPP", ]
-
+    #this function returns a queue of all game levels
+    def level_queue(self):
+        level_queue = Queue(maxsize=10)
+        level_queue.put(self.level_1)
+        level_queue.put(self.level_2)
+        return level_queue
 
 class Level():
     def __init__(self):
@@ -274,13 +285,23 @@ class Level():
 def gameloop():
 #Initializes game loop with level and player start locations
     end = False
-    level = Levels()
-    tiles = Level().build_level(level.level_1)
+    level_queue = Levels().level_queue()
+    current_level = Levels()
+    tiles = Level().build_level(level_queue.get())
     x = (display_width*0.45)
     y = (display_height * 0.80)
     player = Player(x, y, tiles)
 
     while not end:
+        #starts a new level
+        if player.level_complete is True:
+            #todo this try except causes the game to loop for now
+            if not level_queue.empty():
+                tiles= Level().build_level(level_queue.get())
+                player = Player(x, y, tiles)
+            else:
+                end=True
+
         gameDisplay.fill(black)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
