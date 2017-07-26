@@ -32,7 +32,7 @@ class Player(pygame.sprite.Sprite):
     def jump(self):
 
         if self.jump_legal == True:
-            self.y_change = -8
+            self.y_change = -4.5
             self.jump_legal = False
 
     def collision_detection_x(self, x_change, tiles):
@@ -200,7 +200,28 @@ class Box(pygame.sprite.Sprite):
 class Levels():
     def __init__(self):
         super().__init__()
-        self.level_1 = [
+        #this level should never actually be called, merely a blank slate to build more levels
+        self.level_template =[
+            "PPPPPPPPPPPPPPPPPPPPPPPPP",
+            "P                       P",
+            "P                       P",
+            "P                       P",
+            "P                       P",
+            "P                       P",
+            "P                       P",
+            "P                       P",
+            "P                       P",
+            "P                       P",
+            "P                       P",
+            "P                       P",
+            "P                       P",
+            "P                       P",
+            "P                       P",
+            "P                       P",
+            "P                       P",
+            "P                       P",
+            "PPPPPPPPPPPPPPPPPPPPPPPPP", ]
+        self.test_level_1 = [
             "PPPPPPPPPPPPPPPPPPPPPPPPP",
             "P                       P",
             "P                       P",
@@ -220,7 +241,7 @@ class Levels():
             "PP                      P",
             "P              B  B     P",
             "PPPPPPPPPPPPPPPPPPPPPPPPP", ]
-        self.level_2 = [
+        self.test_level_2 = [
             "PPPPPPPPPPPPPPPPPPPPPPPPP",
             "P                       P",
             "P                       P",
@@ -240,11 +261,31 @@ class Levels():
             "PP                      P",
             "P BB           B  B     P",
             "PPPPPPPPPPPPPPPPPPPPPPPPP", ]
+        self.level_1 =[
+            "PPPPPPPPPPPPPPPPPPPPPPPPP",
+            "P           B           P",
+            "P       PPPPP PPPP      P",
+            "P           P P    PPPPPP",
+            "PPPPPP      P PPPP      P",
+            "P           P P         P",
+            "P       PPPPP PP   PPPPPPP",
+            "P           P PPP       P",
+            "PPPPPP      P PPPP      P",
+            "P           P PPPPP     P",
+            "P       PPPPP P        PP",
+            "P           P P       PPP",
+            "PPPPPP      P PP     PPPP",
+            "P           P P      P TP",
+            "P       PPPPP       PP  P",
+            "P           P        P  P",
+            "PPPPPP      P PPPPPPPP  P",
+            "P       PP              P",
+            "PPPPPPPPPPPPPPPPPPPPPPPPP", ]
     #this function returns a queue of all game levels
     def level_queue(self):
         level_queue = Queue(maxsize=10)
+        level_queue.put(self.test_level_1)
         level_queue.put(self.level_1)
-        level_queue.put(self.level_2)
         return level_queue
 
 class Level():
@@ -288,8 +329,8 @@ def gameloop():
     level_queue = Levels().level_queue()
     current_level = Levels()
     tiles = Level().build_level(level_queue.get())
-    x = (display_width*0.45)
-    y = (display_height * 0.80)
+    x = (display_width*0.1)
+    y = (display_height * 0.9)
     player = Player(x, y, tiles)
 
     while not end:
