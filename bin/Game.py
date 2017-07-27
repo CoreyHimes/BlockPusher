@@ -197,7 +197,7 @@ class Box(pygame.sprite.Sprite):
             if t is not self:
                 if pygame.sprite.collide_rect(self, t):
                     if pygame.sprite.collide_mask(self, t) is not None:
-                        if isinstance(t, Platform):
+                        #if isinstance(t, Platform):
                             if self.y_change > 0:
                                 self.rect.bottom = t.rect.top
                                 self.y_change = 0
@@ -270,29 +270,50 @@ class Levels():
             "PPPPPPPPPPPPPPPPPPPPPPPPP", ]
         self.level_1 =[
             "PPPPPPPPPPPPPPPPPPPPPPPPP",
-            "P           B           P",
-            "P       PPPPP PPPP      P",
-            "P           P P    PPPPPP",
-            "PPPPPP      P PPPP      P",
-            "P           P P         P",
-            "P       PPPPP PP   PPPPPPP",
-            "P           P PPP       P",
-            "PPPPPP      P PPPP      P",
-            "P           P PPPPP     P",
-            "P       PPPPP P        PP",
-            "P           P P       PPP",
-            "PPPPPP      P PP     PPPP",
-            "P           P P      P TP",
-            "P       PPPPP       PP  P",
-            "P           P        P  P",
-            "PPPPPP      P PPPPPPPP  P",
-            "P       PP              P",
+            "P                       P",
+            "P          B            P",
+            "P      PPPPP  PP   PPPPPP",
+            "PPPPPP     P  PPPP      P",
+            "P          P  P         P",
+            "P      PPPPP  PP   PPPPPPP",
+            "P          P  PPP       P",
+            "PPPPPP     P  PPPP      P",
+            "P          P  PPPPP P   P",
+            "P      PPPPP  P        PP",
+            "P          P  P       PPP",
+            "PPPPPP     P  PP     PPPP",
+            "P          P  P      P TP",
+            "P      PPPPP        PP  P",
+            "P          P         P  P",
+            "PPPPPP     P  PPPPPPPP  P",
+            "P       P               P",
+            "PPPPPPPPPPPPPPPPPPPPPPPPP", ]
+        self.level_2 = [
+            "PPPPPPPPPPPPPPPPPPPPPPPPP",
+            "P                       P",
+            "P                       P",
+            "P                       P",
+            "P                       P",
+            "P                       P",
+            "P                       P",
+            "P                       P",
+            "P                       P",
+            "P                       P",
+            "P                       P",
+            "P                       P",
+            "P                       P",
+            "P                       P",
+            "P                       P",
+            "P       T               P",
+            "P       B               P",
+            "P       B               P",
             "PPPPPPPPPPPPPPPPPPPPPPPPP", ]
     #this function returns a queue of all game levels
     def level_queue(self):
         level_queue = Queue(maxsize=10)
-        level_queue.put(self.test_level_1)
+        #level_queue.put(self.test_level_1)
         level_queue.put(self.level_1)
+        level_queue.put(self.level_2)
         return level_queue
 
 class Level():
