@@ -32,12 +32,12 @@ class Player(pygame.sprite.Sprite):
 
     def jump(self):
 
-        if self.jump_legal == True:
+        if self.jump_legal is True:
             self.y_change = -4.5
             self.jump_legal = False
 
     def collision_detection_x(self, x_change, tiles):
-        #Checks for Entitys for the player to collide with
+        # Checks for Entitys for the player to collide with
 
         for t in tiles:
             if pygame.sprite.collide_rect(self,t):
@@ -56,7 +56,7 @@ class Player(pygame.sprite.Sprite):
                     if isinstance(t, Box):
 
                         t.x_change=self.x_change
-                        #this function checks if the box collides with another object
+                        # this function checks if the box collides with another object
                         if t.box_collision_x(tiles) is True:
                             if x_change > 0:
                                 while pygame.sprite.collide_mask(self, t) is not None:
@@ -98,7 +98,6 @@ class Player(pygame.sprite.Sprite):
                     if isinstance(t, Teleporter):
                         self.level_complete = True
 
-
     def go_left(self):
         self.x_change = -2
 
@@ -109,7 +108,7 @@ class Player(pygame.sprite.Sprite):
         self.x_change = 0
 
     def gravity(self):
-       self.y_change += .15
+        self.y_change += .15
 
     def update(self):
 
@@ -118,6 +117,7 @@ class Player(pygame.sprite.Sprite):
         self.collision_detection_x(self.x_change,self.tiles)
         self.rect.top += self.y_change
         self.collision_detection_y(self.y_change,self.tiles)
+
 
 class Platform(pygame.sprite.Sprite):
     def __init__(self, x, y):
@@ -197,17 +197,16 @@ class Box(pygame.sprite.Sprite):
             if t is not self:
                 if pygame.sprite.collide_rect(self, t):
                     if pygame.sprite.collide_mask(self, t) is not None:
-                        #if isinstance(t, Platform):
-                            if self.y_change > 0:
-                                self.rect.bottom = t.rect.top
-                                self.y_change = 0
+                        if self.y_change > 0:
+                            self.rect.bottom = t.rect.top
+                            self.y_change = 0
 
 
-#This is a class of constants, namely the array representations of all of the levels
+# This is a class of constants, namely the array representations of all of the levels
 class Levels():
     def __init__(self):
         super().__init__()
-        #this level should never actually be called, merely a blank slate to build more levels
+        # this level should never actually be called, merely a blank slate to build more levels
         self.level_template =[
             "PPPPPPPPPPPPPPPPPPPPPPPPP",
             "P                       P",
@@ -285,8 +284,8 @@ class Levels():
             "P          P  P      P TP",
             "P      PPPPP        PP  P",
             "P          P         P  P",
-            "PPPPPP     P  PPPPPPPP  P",
-            "P       P               P",
+            "PPPP  P    P  PPPPPPPP  P",
+            "P   B P                 P",
             "PPPPPPPPPPPPPPPPPPPPPPPPP", ]
         self.level_2 = [
             "PPPPPPPPPPPPPPPPPPPPPPPPP",
@@ -304,17 +303,18 @@ class Levels():
             "P                       P",
             "P                       P",
             "P                       P",
-            "P       T               P",
-            "P       B               P",
-            "P       B               P",
+            "P                       P",
+            "P  PPPPPP               P",
+            "P B BT                  P",
             "PPPPPPPPPPPPPPPPPPPPPPPPP", ]
-    #this function returns a queue of all game levels
+
+    # this function returns a queue of all game levels
     def level_queue(self):
         level_queue = Queue(maxsize=10)
-        #level_queue.put(self.test_level_1)
-        level_queue.put(self.level_1)
+        #level_queue.put(self.level_1)
         level_queue.put(self.level_2)
         return level_queue
+
 
 class Level():
     def __init__(self):
@@ -347,7 +347,7 @@ class Level():
                 x += 32
             y += 32
             x = 0
-        #adds reference to the entities for box
+        # adds reference to the entities for box
         for entity in entities:
             if isinstance(entity, Box):
                 entity.tile_adder(entities)
@@ -355,17 +355,17 @@ class Level():
 
 
 def gameloop():
-#Initializes game loop with level and player start locations
+# Initializes game loop with level and player start locations
     end = False
     level_queue = Levels().level_queue()
     current_level = Levels()
     tiles = Level().build_level(level_queue.get())
-    x = (display_width*0.1)
+    x = (display_width*0.12)
     y = (display_height * 0.9)
     player = Player(x, y, tiles)
 
     while not end:
-        #starts a new level
+        # starts a new level if the player has completed the current level
         if player.level_complete is True:
             #todo this try except causes the game to loop for now
             if not level_queue.empty():
@@ -402,7 +402,6 @@ def gameloop():
         gameDisplay.blit(player.image,(player.rect.left,player.rect.top))
         pygame.display.flip()
         clock.tick(60)
-
 
 
 gameloop()
