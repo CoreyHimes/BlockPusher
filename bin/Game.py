@@ -57,7 +57,21 @@ class Player(pygame.sprite.Sprite):
 
                         t.x_change=self.x_change
                         # this function checks if the box collides with another object
-                        if t.box_collision_x(tiles) is True:
+                        if self.jump_legal is True:
+                            if t.box_collision_x(tiles) is False:
+                                print (self.rect.left)
+
+                                if x_change > 0:
+                                    while pygame.sprite.collide_mask(self, t) is not None:
+                                        self.rect.left += -1
+
+                                if x_change < 0:
+                                    while pygame.sprite.collide_mask(self, t) is not None:
+                                        self.rect.left += 1
+
+                                t.update()
+                        else:
+                            t.x_change = 0
                             if x_change > 0:
                                 while pygame.sprite.collide_mask(self, t) is not None:
                                     self.rect.left += -1
@@ -66,7 +80,6 @@ class Player(pygame.sprite.Sprite):
                                 while pygame.sprite.collide_mask(self, t) is not None:
                                     self.rect.left += 1
 
-                        t.update()
 
     def collision_detection_y(self, y_change, tiles):
         # collides the player while he is moving in the y direction
@@ -290,22 +303,22 @@ class Levels():
         self.level_2 = [
             "PPPPPPPPPPPPPPPPPPPPPPPPP",
             "P                       P",
-            "P                       P",
-            "P                       P",
-            "P                       P",
-            "P                       P",
-            "P                       P",
-            "P                       P",
-            "P                       P",
-            "P                       P",
-            "P                       P",
-            "P                       P",
-            "P                       P",
-            "P                       P",
-            "P                       P",
-            "P                       P",
-            "P  PPPPPP               P",
-            "P B BT                  P",
+            "P   PPPPPPPPPPPPPPPPPPP P",
+            "P                     p P",
+            "P                     P P",
+            "P                     P P",
+            "P                     P P",
+            "P                     P P",
+            "P                     P P",
+            "P                     P P",
+            "P                     P P",
+            "P                     P P",
+            "P       P             P P",
+            "P                     P P",
+            "P         B           P P",
+            "P    B  B P           P P",
+            "P  PPPPPP PPPPPPPPPPPPP P",
+            "P B B     PT            P",
             "PPPPPPPPPPPPPPPPPPPPPPPPP", ]
 
     # this function returns a queue of all game levels
