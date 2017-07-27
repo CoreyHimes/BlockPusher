@@ -159,12 +159,17 @@ class Box(pygame.sprite.Sprite):
         self.mask = pygame.mask.from_surface(self.image)
         self.x_change = 0
         self.y_change = 0
+        self.tiles = []
 
     def update(self):
         self.rect.left += self.x_change
         self.x_change = 0
-        #self.gravity()
+        self.gravity()
         self.rect.bottom += self.y_change
+        self.box_collision_y(self.tiles)
+
+    def tile_adder(self, tiles):
+        self.tiles = tiles
 
     def gravity(self):
         self.y_change += .15
@@ -319,7 +324,10 @@ class Level():
                 x += 32
             y += 32
             x = 0
-
+        #adds reference to the entities for box
+        for entity in entities:
+            if isinstance(entity, Box):
+                entity.tile_adder(entities)
         return entities
 
 
@@ -371,6 +379,8 @@ def gameloop():
         gameDisplay.blit(player.image,(player.rect.left,player.rect.top))
         pygame.display.flip()
         clock.tick(60)
+
+
 
 gameloop()
 pygame.quit()
