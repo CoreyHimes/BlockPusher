@@ -10,9 +10,10 @@ display_height = 600*display_scale
 black = (0, 0, 0)
 white = (255, 255, 255)
 
-gameDisplay = pygame.display.set_mode((display_width,display_height))
+gameDisplay = pygame.display.set_mode((display_width, display_height))
 pygame.display.set_caption('Title')
 clock = pygame.time.Clock()
+
 
 class Player(pygame.sprite.Sprite):
 
@@ -162,9 +163,10 @@ class Box(pygame.sprite.Sprite):
         self.tiles = []
 
     def update(self):
-        self.rect.left += self.x_change
-        self.x_change = 0
         self.gravity()
+        self.rect.left += self.x_change
+        self.box_collision_x(self.tiles)
+        self.x_change = 0
         self.rect.bottom += self.y_change
         self.box_collision_y(self.tiles)
 
@@ -177,7 +179,7 @@ class Box(pygame.sprite.Sprite):
     def box_collision_x(self, tiles):
         for t in tiles:
             if t is not self:
-                 if pygame.sprite.collide_rect(self,t):
+                if pygame.sprite.collide_rect(self,t):
                     if pygame.sprite.collide_mask(self, t) is not None:
                         if self.x_change > 0:
                             while pygame.sprite.collide_mask(self,t) is not None:
