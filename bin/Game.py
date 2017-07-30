@@ -274,8 +274,8 @@ class Levels():
             "P                       P",
             "P         PPPPPPP       P",
             "P                      TP",
-            "P                     PPP",
-            "PP                      P",
+            "P              P      PPP",
+            "PP             B        P",
             "P BB           B  B     P",
             "PPPPPPPPPPPPPPPPPPPPPPPPP", ]
         self.level_1 =[
@@ -341,7 +341,7 @@ class Levels():
 
     # this function returns a queue of all game levels
     def level_queue(self):
-        level_queue = Queue(maxsize=10)
+        level_queue = Queue(maxsize=100)
         level_queue.put(self.level_1)
         level_queue.put(self.level_2)
         level_queue.put(self.level_3)
@@ -419,6 +419,8 @@ def gameloop():
                     player.go_left()
                 elif event.key == pygame.K_RIGHT:
                     player.go_right()
+                elif event.key == pygame.K_p:
+                    display_message("paused")
 
             if event.type == pygame.KEYUP:
 
@@ -435,7 +437,7 @@ def gameloop():
         pygame.display.flip()
         clock.tick(60)
 
-def start_screen():
+def display_message(message):
 
     base_font = pygame.font.SysFont("arial", 48)
     open = True
@@ -445,15 +447,14 @@ def start_screen():
                 open = False
 
         gameDisplay.fill(white)
-        text_surf = base_font.render("Click Anywhere to Start Game", True, black)
+        text_surf = base_font.render(message, True, black)
         gameDisplay.blit(text_surf, ((display_width/2)-335, (display_height/2)))
         pygame.display.update()
         clock.tick(60)
 
-def the_end():
-    pass
 
-start_screen()
+display_message("Click Anywhere to Start Game")
 gameloop()
+display_message("THE END")
 pygame.quit()
 quit()
