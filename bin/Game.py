@@ -59,7 +59,6 @@ class Player(pygame.sprite.Sprite):
                         # this function checks if the box collides with another object
                         if self.jump_legal is True:
                             if t.box_collision_x(tiles) is False:
-                                print (self.rect.left)
 
                                 if x_change > 0:
                                     while pygame.sprite.collide_mask(self, t) is not None:
@@ -79,7 +78,6 @@ class Player(pygame.sprite.Sprite):
                             if x_change < 0:
                                 while pygame.sprite.collide_mask(self, t) is not None:
                                     self.rect.left += 1
-
 
     def collision_detection_y(self, y_change, tiles):
         # collides the player while he is moving in the y direction
@@ -112,10 +110,10 @@ class Player(pygame.sprite.Sprite):
                         self.level_complete = True
 
     def go_left(self):
-        self.x_change = -2
+        self.x_change = -2.3
 
     def go_right(self):
-        self.x_change = 2
+        self.x_change = 2.3
 
     def stop(self):
         self.x_change = 0
@@ -305,27 +303,48 @@ class Levels():
             "P                       P",
             "P   PPPPPPPPPPPPPPPPPPP P",
             "P                     p P",
-            "P                     P P",
-            "P                     P P",
-            "P                     P P",
-            "P                     P P",
-            "P                     P P",
-            "P                     P P",
-            "P                     P P",
-            "P                     P P",
+            "PPPP    P             P P",
             "P       P             P P",
-            "P                     P P",
+            "P   PPPPP             P P",
+            "P       P             P P",
+            "PP      P        B    P P",
+            "P P     P        PPP  P P",
+            "P       P     B       P P",
+            "P       B     PPPP    P P",
+            "PPPPPPPPP  B          P P",
+            "P          PPPP       P P",
             "P         B           P P",
-            "P    B  B P           P P",
+            "P    B  B P    B   B  P P",
             "P  PPPPPP PPPPPPPPPPPPP P",
             "P B B     PT            P",
+            "PPPPPPPPPPPPPPPPPPPPPPPPP", ]
+        self.level_3 = [
+            "PPPPPPPPPPPPPPPPPPPPPPPPP",
+            "P                       P",
+            "P                       P",
+            "P                       P",
+            "P                       P",
+            "P                       P",
+            "P                       P",
+            "P                       P",
+            "P                       P",
+            "P                       P",
+            "P                       P",
+            "P                       P",
+            "P                       P",
+            "P                       P",
+            "P                       P",
+            "P                       P",
+            "P                       P",
+            "P                       P",
             "PPPPPPPPPPPPPPPPPPPPPPPPP", ]
 
     # this function returns a queue of all game levels
     def level_queue(self):
         level_queue = Queue(maxsize=10)
-        #level_queue.put(self.level_1)
+        level_queue.put(self.level_1)
         level_queue.put(self.level_2)
+        level_queue.put(self.level_3)
         return level_queue
 
 
@@ -416,7 +435,25 @@ def gameloop():
         pygame.display.flip()
         clock.tick(60)
 
+def start_screen():
 
+    base_font = pygame.font.SysFont("arial", 48)
+    open = True
+    while open:
+        for event in pygame.event.get():
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                open = False
+
+        gameDisplay.fill(white)
+        text_surf = base_font.render("Click Anywhere to Start Game", True, black)
+        gameDisplay.blit(text_surf, ((display_width/2)-335, (display_height/2)))
+        pygame.display.update()
+        clock.tick(60)
+
+def the_end():
+    pass
+
+start_screen()
 gameloop()
 pygame.quit()
 quit()
