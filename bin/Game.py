@@ -321,22 +321,42 @@ class Levels():
         self.level_3 = [
             "PPPPPPPPPPPPPPPPPPPPPPPPP",
             "P                       P",
+            "P                      TP",
+            "P  PPPPPPPPPPPPPPPPPPPPPP",
+            "P P                     P",
+            "P         B             P",
+            "PP      PPPP            P",
+            "P                       P",
+            "P            P          P",
+            "P     B                 P",
+            "P    PPP    P           P",
+            "P   P                   P",
+            "PP       P              P",
+            "P                       P",
+            "PPP                     P",
+            "P                       P",
+            "P        B              P",
+            "P       PPP             P",
+            "PPPPPPPPPPPPPPPPPPPPPPPPP", ]
+        self.level_4 =[
+            "PPPPPPPPPPPPPPPPPPPPPPPPP",
             "P                       P",
             "P                       P",
+            "P                   P   P",
             "P                       P",
+            "P       B  B          B P",
+            "P    PPPPPPPPPPPP     PPP",
+            "P   P           P      TP",
+            "P               P     PPP",
+            "PP             P        P",
+            "P              P        P",
+            "P   P          P        P",
+            "P              PPPPPPPP P",
+            "PP                      P",
             "P                       P",
+            "P   P                   P",
             "P                       P",
-            "P                       P",
-            "P                       P",
-            "P                       P",
-            "P                       P",
-            "P                       P",
-            "P                       P",
-            "P                       P",
-            "P                       P",
-            "P                       P",
-            "P                       P",
-            "P                       P",
+            "PP                      P",
             "PPPPPPPPPPPPPPPPPPPPPPPPP", ]
 
     # this function returns a queue of all game levels
@@ -345,6 +365,7 @@ class Levels():
         level_queue.put(self.level_1)
         level_queue.put(self.level_2)
         level_queue.put(self.level_3)
+        level_queue.put(self.level_4)
         return level_queue
 
 
@@ -390,8 +411,8 @@ def gameloop():
 # Initializes game loop with level and player start locations
     end = False
     level_queue = Levels().level_queue()
-    current_level = Levels()
-    tiles = Level().build_level(level_queue.get())
+    current_level = level_queue.get()
+    tiles = Level().build_level(current_level)
     x = (display_width*0.12)
     y = (display_height * 0.9)
     player = Player(x, y, tiles)
@@ -401,7 +422,8 @@ def gameloop():
         if player.level_complete is True:
             #todo this try except causes the game to loop for now
             if not level_queue.empty():
-                tiles= Level().build_level(level_queue.get())
+                current_level = level_queue.get()
+                tiles= Level().build_level(current_level)
                 player = Player(x, y, tiles)
             else:
                 end=True
@@ -421,6 +443,9 @@ def gameloop():
                     player.go_right()
                 elif event.key == pygame.K_p:
                     display_message("paused")
+                elif event.key == pygame.K_r:
+                    tiles = Level().build_level(current_level)
+                    player = Player(x, y, tiles)
 
             if event.type == pygame.KEYUP:
 
