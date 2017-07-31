@@ -17,7 +17,7 @@ clock = pygame.time.Clock()
 
 class Player(pygame.sprite.Sprite):
 
-    def __init__(self, x, y, tiles):
+    def __init__(self, x, y, tiles, lives):
         super().__init__()
 
         self.image = pygame.image.load('images/CharacterSprite.png').convert_alpha()
@@ -29,6 +29,14 @@ class Player(pygame.sprite.Sprite):
         self.tiles = tiles
         self.mask = pygame.mask.from_surface(self.image)
         self.level_complete = False
+        self.lives = lives
+        self.is_dead = False
+
+    def gain_lives(self):
+        self.lives += 1
+
+    def die(self):
+        self.lives -= 1
 
     def jump(self):
 
@@ -79,6 +87,8 @@ class Player(pygame.sprite.Sprite):
                                 while pygame.sprite.collide_mask(self, t) is not None:
                                     self.rect.left += 1
 
+
+
     def collision_detection_y(self, y_change, tiles):
         # collides the player while he is moving in the y direction
 
@@ -108,6 +118,10 @@ class Player(pygame.sprite.Sprite):
 
                     if isinstance(t, Teleporter):
                         self.level_complete = True
+
+                    if isinstance(t, Spike):
+                        self.die()
+                        self.is_dead= True
 
     def go_left(self):
         self.x_change = -2.3
@@ -144,7 +158,7 @@ class Platform(pygame.sprite.Sprite):
 class Spike(pygame.sprite.Sprite):
     def __init__(self, x, y):
         super().__init__()
-        self.image = pygame.image.load('images/test.png').convert_alpha()
+        self.image = pygame.image.load('images/Spike.png').convert_alpha()
         self.rect = Rect(x, y, 32, 32)
         self.mask = pygame.mask.from_surface(self.image)
 
@@ -237,47 +251,9 @@ class Levels():
             "P                       P",
             "P                       P",
             "P                       P",
-            "PPPPPPPPPPPPPPPPPPPPPPPPP", ]
-        self.test_level_1 = [
             "PPPPPPPPPPPPPPPPPPPPPPPPP",
-            "P                       P",
-            "P                       P",
-            "P                       P",
-            "P                    PPPP",
-            "P                       P",
-            "PP                      P",
-            "PPP              B      P",
-            "PPPPPPPPPPPPPPPPPPP     P",
-            "P                       P",
-            "P                       P",
-            "P                 PPPPPPP",
-            "P                       P",
-            "P         PPPPPPP       P",
-            "P                      TP",
-            "P                     PPP",
-            "PP                      P",
-            "P              B  B     P",
-            "PPPPPPPPPPPPPPPPPPPPPPPPP", ]
-        self.test_level_2 = [
-            "PPPPPPPPPPPPPPPPPPPPPPPPP",
-            "P                       P",
-            "P                       P",
-            "P                       P",
-            "P                    PPPP",
-            "P                       P",
-            "PP                      P",
-            "PPP              B      P",
-            "PPPPPPPPPPPPPPPPPPP     P",
-            "P                       P",
-            "P                       P",
-            "P                 PPPPPPP",
-            "P                       P",
-            "P         PPPPPPP       P",
-            "P                      TP",
-            "P              P      PPP",
-            "PP             B        P",
-            "P BB           B  B     P",
-            "PPPPPPPPPPPPPPPPPPPPPPPPP", ]
+            "",
+            "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSS"]
         self.level_1 =[
             "PPPPPPPPPPPPPPPPPPPPPPPPP",
             "P                       P",
@@ -297,7 +273,9 @@ class Levels():
             "P          P         P  P",
             "PPPP  P    P  PPPPPPPP  P",
             "P   B P                 P",
-            "PPPPPPPPPPPPPPPPPPPPPPPPP", ]
+            "PPPPPPPPPPPPPPPPPPPPPPPPP",
+            "",
+            "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSS"]
         self.level_2 = [
             "PPPPPPPPPPPPPPPPPPPPPPPPP",
             "P                       P",
@@ -317,7 +295,9 @@ class Levels():
             "P    B  B P    B   B  P P",
             "P  PPPPPP PPPPPPPPPPPPP P",
             "P B B     PT            P",
-            "PPPPPPPPPPPPPPPPPPPPPPPPP", ]
+            "PPPPPPPPPPPPPPPPPPPPPPPPP",
+            "",
+            "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSS"]
         self.level_3 = [
             "PPPPPPPPPPPPPPPPPPPPPPPPP",
             "P                       P",
@@ -337,7 +317,9 @@ class Levels():
             "P                       P",
             "P        B              P",
             "P       PPP             P",
-            "PPPPPPPPPPPPPPPPPPPPPPPPP", ]
+            "PPPPPPPPPPPPPPPPPPPPPPPPP",
+            "",
+            "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSS"]
         self.level_4 =[
             "PPPPPPPPPPPPPPPPPPPPPPPPP",
             "P                       P",
@@ -357,7 +339,32 @@ class Levels():
             "P   P                   P",
             "P                       P",
             "PP                      P",
-            "PPPPPPPPPPPPPPPPPPPPPPPPP", ]
+            "PPPPPPPPPPPPPPPPPPPPPPPPP",
+            "",
+            "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSS"]
+        self.level_5 =[
+            "PPPPPPPPPPPPPPPPPPPPPPPPP",
+            "P                       P",
+            "P                       P",
+            "P                       P",
+            "P                       P",
+            "P                       P",
+            "P                       P",
+            "P                       P",
+            "P                       P",
+            "P                       P",
+            "P                       P",
+            "P                       P",
+            "P                       P",
+            "P                       P",
+            "P                       P",
+            "P                       P",
+            "P                       P",
+            "P                T      P",
+            "PPPPPPPPPP PPPPPPPPPPPPPP",
+            "",
+            "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSS"]
+
 
     # this function returns a queue of all game levels
     def level_queue(self):
@@ -366,6 +373,7 @@ class Levels():
         level_queue.put(self.level_2)
         level_queue.put(self.level_3)
         level_queue.put(self.level_4)
+        level_queue.put(self.level_5)
         return level_queue
 
 
@@ -415,7 +423,7 @@ def gameloop():
     tiles = Level().build_level(current_level)
     x = (display_width*0.12)
     y = (display_height * 0.9)
-    player = Player(x, y, tiles)
+    player = Player(x, y, tiles, 3)
 
     while not end:
         # starts a new level if the player has completed the current level
@@ -424,8 +432,16 @@ def gameloop():
             if not level_queue.empty():
                 current_level = level_queue.get()
                 tiles= Level().build_level(current_level)
-                player = Player(x, y, tiles)
+                player = Player(x, y, tiles, player.lives)
             else:
+                end=True
+        if player.is_dead is True:
+            if player.lives > 0:
+            #current_level = level_queue.get()
+                tiles = Level().build_level(current_level)
+                player = Player(x, y, tiles, player.lives)
+            else:
+                display_message("game over")
                 end=True
 
         gameDisplay.fill(black)
@@ -459,6 +475,7 @@ def gameloop():
             gameDisplay.blit(tile.image, (tile.rect.left,tile.rect.top))
 
         gameDisplay.blit(player.image,(player.rect.left,player.rect.top))
+        print (player.lives)
         pygame.display.flip()
         clock.tick(60)
 
