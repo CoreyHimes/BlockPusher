@@ -124,10 +124,10 @@ class Player(pygame.sprite.Sprite):
                         self.is_dead= True
 
     def go_left(self):
-        self.x_change = -2.3
+        self.x_change = -3
 
     def go_right(self):
-        self.x_change = 2.3
+        self.x_change = 3
 
     def stop(self):
         self.x_change = 0
@@ -276,7 +276,7 @@ class Levels():
             "PPPPPPPPPPPPPPPPPPPPPPPPP",
             "",
             "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSS"]
-        self.level_2 = [
+        self.level_4 = [
             "PPPPPPPPPPPPPPPPPPPPPPPPP",
             "P                       P",
             "P   PPPPPPPPPPPPPPPPPPP P",
@@ -302,8 +302,8 @@ class Levels():
             "PPPPPPPPPPPPPPPPPPPPPPPPP",
             "P                       P",
             "P                      TP",
-            "P  PPPPPPPPPPPPPPPPPPPPPP",
-            "P P                     P",
+            "P      PPPPPPPPPPPPPPPPPP",
+            "P     P                 P",
             "P         B             P",
             "PP      PPPP            P",
             "P                       P",
@@ -320,7 +320,7 @@ class Levels():
             "PPPPPPPPPPPPPPPPPPPPPPPPP",
             "",
             "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSS"]
-        self.level_4 =[
+        self.level_2 =[
             "PPPPPPPPPPPPPPPPPPPPPPPPP",
             "P                       P",
             "P                       P",
@@ -357,11 +357,11 @@ class Levels():
             "P                       P",
             "P                       P",
             "P                       P",
-            "P                       P",
-            "P                       P",
-            "P                       P",
-            "P                T      P",
-            "PPPPPPPPPP PPPPPPPPPPPPPP",
+            "P            P          P",
+            "P     P                 P",
+            "PP                      P",
+            "P                   T   P",
+            "PPPPPPPPPP         PPPPPP",
             "",
             "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSS"]
 
@@ -437,7 +437,6 @@ def gameloop():
                 end=True
         if player.is_dead is True:
             if player.lives > 0:
-            #current_level = level_queue.get()
                 tiles = Level().build_level(current_level)
                 player = Player(x, y, tiles, player.lives)
             else:
@@ -461,7 +460,7 @@ def gameloop():
                     display_message("paused")
                 elif event.key == pygame.K_r:
                     tiles = Level().build_level(current_level)
-                    player = Player(x, y, tiles)
+                    player = Player(x, y, tiles, player.lives)
 
             if event.type == pygame.KEYUP:
 
@@ -475,7 +474,6 @@ def gameloop():
             gameDisplay.blit(tile.image, (tile.rect.left,tile.rect.top))
 
         gameDisplay.blit(player.image,(player.rect.left,player.rect.top))
-        print (player.lives)
         pygame.display.flip()
         clock.tick(60)
 
