@@ -24,7 +24,6 @@ class Player(pygame.sprite.Sprite):
         super().__init__()
 
         self.image = pygame.image.load('images/CharacterSprite.png').convert_alpha()
-
         self.x_change = 0
         self.y_change = 0
         self.rect = Rect(x_location, y_location, 32, 32)
@@ -52,17 +51,15 @@ class Player(pygame.sprite.Sprite):
 
         for t in tiles:
             if pygame.sprite.collide_rect(self, t):
-                if pygame.sprite.collide_mask(self, t) is not None:
+                while pygame.sprite.collide_mask(self, t) is not None:
 
                     if isinstance(t, Platform):
 
                         if x_change > 0:
-                            while pygame.sprite.collide_mask(self, t) is not None:
-                                self.rect.left += -1
+                            self.rect.left += -1
 
                         if x_change < 0:
-                            while pygame.sprite.collide_mask(self, t) is not None:
-                                self.rect.left += 1
+                            self.rect.left += 1
 
                     if isinstance(t, Box):
 
@@ -72,24 +69,19 @@ class Player(pygame.sprite.Sprite):
                             if t.box_collision_x(tiles) is False:
 
                                 if x_change > 0:
-                                    while pygame.sprite.collide_mask(self, t) is not None:
-                                        self.rect.left += -1
+                                    self.rect.left += -1
 
                                 if x_change < 0:
-                                    while pygame.sprite.collide_mask(self, t) is not None:
-                                        self.rect.left += 1
+                                    self.rect.left += 1
 
                                 t.update()
                         else:
                             t.x_change = 0
                             if x_change > 0:
-                                while pygame.sprite.collide_mask(self, t) is not None:
-                                    self.rect.left += -1
+                                self.rect.left += -1
 
                             if x_change < 0:
-                                while pygame.sprite.collide_mask(self, t) is not None:
-                                    self.rect.left += 1
-
+                                self.rect.left += 1
 
 
     def collision_detection_y(self, y_change, tiles):
