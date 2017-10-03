@@ -1,30 +1,33 @@
+"""
+This is a basic puzzle/platform game made to learn the python langauge
+"""
 import pygame
+from queue import Queue
 from pygame import *
-from queue import *
 
 pygame.init()
-display_scale = 1
-display_width = 800*display_scale
-display_height = 600*display_scale
+DISPLAY_SCALE = 1
+DISPLAY_WIDTH = 800 * DISPLAY_SCALE
+DISPLAY_HEIGHT = 600 * DISPLAY_SCALE
 
-black = (0, 0, 0)
-white = (255, 255, 255)
+BLACK = (0, 0, 0)
+WHITE = (255, 255, 255)
 
-gameDisplay = pygame.display.set_mode((display_width, display_height))
+GAME_DISPLAY = pygame.display.set_mode((DISPLAY_WIDTH, DISPLAY_HEIGHT))
 pygame.display.set_caption('Title')
-clock = pygame.time.Clock()
+GAME_CLOCK = pygame.time.Clock()
 
 
 class Player(pygame.sprite.Sprite):
 
-    def __init__(self, x, y, tiles, lives):
+    def __init__(self, x_location, y_location, tiles, lives):
         super().__init__()
 
         self.image = pygame.image.load('images/CharacterSprite.png').convert_alpha()
 
         self.x_change = 0
         self.y_change = 0
-        self.rect = Rect(x, y, 32, 32)
+        self.rect = Rect(x_location, y_location, 32, 32)
         self.jump_legal = True
         self.tiles = tiles
         self.mask = pygame.mask.from_surface(self.image)
@@ -48,22 +51,22 @@ class Player(pygame.sprite.Sprite):
         # Checks for Entitys for the player to collide with
 
         for t in tiles:
-            if pygame.sprite.collide_rect(self,t):
+            if pygame.sprite.collide_rect(self, t):
                 if pygame.sprite.collide_mask(self, t) is not None:
 
                     if isinstance(t, Platform):
 
                         if x_change > 0:
-                            while pygame.sprite.collide_mask(self,t) is not None:
+                            while pygame.sprite.collide_mask(self, t) is not None:
                                 self.rect.left += -1
 
                         if x_change < 0:
-                            while pygame.sprite.collide_mask(self,t) is not None:
+                            while pygame.sprite.collide_mask(self, t) is not None:
                                 self.rect.left += 1
 
                     if isinstance(t, Box):
 
-                        t.x_change=self.x_change
+                        t.x_change = self.x_change
                         # this function checks if the box collides with another object
                         if self.jump_legal is True:
                             if t.box_collision_x(tiles) is False:
@@ -93,8 +96,8 @@ class Player(pygame.sprite.Sprite):
         # collides the player while he is moving in the y direction
 
         for t in tiles:
-            if pygame.sprite.collide_rect(self,t):
-                if pygame.sprite.collide_mask(self,t) is not None:
+            if pygame.sprite.collide_rect(self, t):
+                if pygame.sprite.collide_mask(self, t) is not None:
                     if isinstance(t, Platform):
                         if y_change > 0:
                             self.rect.bottom = t.rect.top
@@ -121,7 +124,7 @@ class Player(pygame.sprite.Sprite):
 
                     if isinstance(t, Spike):
                         self.die()
-                        self.is_dead= True
+                        self.is_dead = True
 
     def go_left(self):
         self.x_change = -3
@@ -139,9 +142,9 @@ class Player(pygame.sprite.Sprite):
 
         self.gravity()
         self.rect.left += self.x_change
-        self.collision_detection_x(self.x_change,self.tiles)
+        self.collision_detection_x(self.x_change, self.tiles)
         self.rect.top += self.y_change
-        self.collision_detection_y(self.y_change,self.tiles)
+        self.collision_detection_y(self.y_change, self.tiles)
 
 
 class Platform(pygame.sprite.Sprite):
@@ -204,14 +207,14 @@ class Box(pygame.sprite.Sprite):
     def box_collision_x(self, tiles):
         for t in tiles:
             if t is not self:
-                if pygame.sprite.collide_rect(self,t):
+                if pygame.sprite.collide_rect(self, t):
                     if pygame.sprite.collide_mask(self, t) is not None:
                         if self.x_change > 0:
-                            while pygame.sprite.collide_mask(self,t) is not None:
+                            while pygame.sprite.collide_mask(self, t) is not None:
                                 self.rect.left += -1
 
                         if self.x_change < 0:
-                            while pygame.sprite.collide_mask(self,t) is not None:
+                            while pygame.sprite.collide_mask(self, t) is not None:
                                 self.rect.left += 1
 
                         return True
@@ -232,7 +235,7 @@ class Levels():
     def __init__(self):
         super().__init__()
         # this level should never actually be called, merely a blank slate to build more levels
-        self.level_template =[
+        self.level_template = [
             "PPPPPPPPPPPPPPPPPPPPPPPPP",
             "P                       P",
             "P                       P",
@@ -254,7 +257,7 @@ class Levels():
             "PPPPPPPPPPPPPPPPPPPPPPPPP",
             "",
             "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSS"]
-        self.level_1 =[
+        self.level_1 = [
             "PPPPPPPPPPPPPPPPPPPPPPPPP",
             "P                       P",
             "P          B            P",
@@ -320,7 +323,7 @@ class Levels():
             "PPPPPPPPPPPPPPPPPPPPPPPPP",
             "",
             "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSS"]
-        self.level_2 =[
+        self.level_2 = [
             "PPPPPPPPPPPPPPPPPPPPPPPPP",
             "P                       P",
             "P                       P",
@@ -342,7 +345,7 @@ class Levels():
             "PPPPPPPPPPPPPPPPPPPPPPPPP",
             "",
             "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSS"]
-        self.level_5 =[
+        self.level_5 = [
             "PPPPPPPPPPPPPPPPPPPPPPPPP",
             "P                       P",
             "P                       P",
@@ -398,11 +401,11 @@ class Level():
                     tiles.append(s)
                     entities.add(s)
                 if col == "T":
-                    t = Teleporter(x,y)
+                    t = Teleporter(x, y)
                     tiles.append(t)
                     entities.add(t)
                 if col == "B":
-                    b = Box(x,y)
+                    b = Box(x, y)
                     tiles.append(b)
                     entities.add(b)
                 x += 32
@@ -421,29 +424,28 @@ def gameloop():
     level_queue = Levels().level_queue()
     current_level = level_queue.get()
     tiles = Level().build_level(current_level)
-    x = (display_width*0.12)
-    y = (display_height * 0.9)
+    x = (DISPLAY_WIDTH * 0.12)
+    y = (DISPLAY_HEIGHT * 0.9)
     player = Player(x, y, tiles, 3)
 
     while not end:
         # starts a new level if the player has completed the current level
         if player.level_complete is True:
-            #todo this try except causes the game to loop for now
             if not level_queue.empty():
                 current_level = level_queue.get()
-                tiles= Level().build_level(current_level)
+                tiles = Level().build_level(current_level)
                 player = Player(x, y, tiles, player.lives)
             else:
-                end=True
+                end = True
         if player.is_dead is True:
             if player.lives > 0:
                 tiles = Level().build_level(current_level)
                 player = Player(x, y, tiles, player.lives)
             else:
                 display_message("game over")
-                end=True
+                end = True
 
-        gameDisplay.fill(black)
+        GAME_DISPLAY.fill(BLACK)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 end = True
@@ -471,11 +473,12 @@ def gameloop():
         player.update()
         for tile in tiles:
             tile.update()
-            gameDisplay.blit(tile.image, (tile.rect.left,tile.rect.top))
+            GAME_DISPLAY.blit(tile.image, (tile.rect.left, tile.rect.top))
 
-        gameDisplay.blit(player.image,(player.rect.left,player.rect.top))
+        GAME_DISPLAY.blit(player.image, (player.rect.left, player.rect.top))
         pygame.display.flip()
-        clock.tick(60)
+        GAME_CLOCK.tick(60)
+
 
 def display_message(message):
 
@@ -486,11 +489,11 @@ def display_message(message):
             if event.type == pygame.MOUSEBUTTONDOWN:
                 open = False
 
-        gameDisplay.fill(white)
-        text_surf = base_font.render(message, True, black)
-        gameDisplay.blit(text_surf, ((display_width/2)-335, (display_height/2)))
+        GAME_DISPLAY.fill(WHITE)
+        text_surf = base_font.render(message, True, BLACK)
+        GAME_DISPLAY.blit(text_surf, ((DISPLAY_WIDTH / 2) - 335, (DISPLAY_HEIGHT / 2)))
         pygame.display.update()
-        clock.tick(60)
+        GAME_CLOCK.tick(60)
 
 
 display_message("Click Anywhere to Start Game")
